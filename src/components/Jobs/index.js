@@ -20,6 +20,13 @@ const appConstants = {
   failure: 'FAILURE',
 }
 
+const appProfileConstants = {
+  initial: 'INITIAL',
+  inProgress: 'INPROGRESS',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+}
+
 const employmentTypesList = [
   {
     label: 'Full Time',
@@ -65,6 +72,7 @@ class Jobs extends Component {
     checkboxArray: [],
     radioValue: '',
     appStatus: appConstants.initial,
+    appProfileStatus: appProfileConstants.initial,
     jobData: '',
   }
 
@@ -74,6 +82,9 @@ class Jobs extends Component {
   }
 
   getProfileDetails = async () => {
+    this.setState({
+      appProfileStatus: appProfileConstants.inProgress,
+    })
     const jwtToken = Cookies.get('jwt_token')
     const url = 'https://apis.ccbp.in/profile'
     const options = {
@@ -90,7 +101,11 @@ class Jobs extends Component {
         profileImageUrl: data.profile_details.profile_image_url,
         shortBio: data.profile_details.short_bio,
       }
-      this.setState({profileData: newData})
+      this.setState({
+        profileData: newData,
+        appStatus: appConstants.success,
+        appProfileStatus: appProfileConstants.success,
+      })
     }
   }
 
@@ -137,6 +152,12 @@ class Jobs extends Component {
       >
         Retry
       </button>
+    </div>
+  )
+
+  renderLoadingView = () => (
+    <div className="profile-loader-container" data-testid="loader">
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
     </div>
   )
 
@@ -299,6 +320,23 @@ class Jobs extends Component {
     </div>
   )
 
+  getProfileView = () => {
+    const {appProfileStatus, profileData} = this.state
+    switch (appProfileStatus) {
+      case appProfileConstants.success:
+        if (profileData !== null) {
+          return this.successProfile()
+        }
+        return this.failureProfile()
+      case appProfileConstants.failure:
+        return this.failureProfile()
+      case appProfileConstants.inProgress:
+        return this.renderLoadingView()
+      default:
+        return null
+    }
+  }
+
   getJobView = () => {
     const {appStatus, jobData} = this.state
     switch (appStatus) {
@@ -315,15 +353,13 @@ class Jobs extends Component {
   }
 
   render() {
-    const {searchInput, profileData} = this.state
+    const {searchInput} = this.state
     return (
       <div className="main-jobs-container">
         <Header />
         <div className="jobs-container">
           <div className="jobs-filter-container">
-            {profileData !== null
-              ? this.successProfile()
-              : this.failureProfile()}
+            {this.getProfileView()}
             <hr />
             <h1 className="filter-name">Type of Employment</h1>
             <ul className="ul-list">

@@ -1,11 +1,11 @@
 import './App.css'
 import {Switch, Route, Redirect} from 'react-router-dom'
-import Login from './Components/Login'
-import Home from './Components/Home'
-import Jobs from './Components/Jobs'
-import JobItemDetails from './Components/JobItemDetails'
-import NotFound from './Components/NotFound'
-import ProtectedRoute from './Components/ProtectedRoute'
+import Login from './components/Login'
+import Home from './components/Home'
+import Jobs from './components/Jobs'
+import JobItemDetails from './components/JobItemDetails'
+import NotFound from './components/NotFound'
+import ProtectedRoute from './components/ProtectedRoute'
 
 const App = () => (
   <>
