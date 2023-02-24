@@ -106,6 +106,8 @@ class Jobs extends Component {
         appStatus: appConstants.success,
         appProfileStatus: appProfileConstants.success,
       })
+    } else {
+      this.setState({appProfileStatus: appProfileConstants.failure})
     }
   }
 
